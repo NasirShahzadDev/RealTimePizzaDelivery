@@ -4,6 +4,10 @@ const expressLayout = require("express-ejs-layouts");
 const path = require("path");
 const PORT = 8000;
 const app = express();
+//assets
+
+app.use(express.static("public"));
+
 //routes
 
 app.get("/", (req, res) => {
