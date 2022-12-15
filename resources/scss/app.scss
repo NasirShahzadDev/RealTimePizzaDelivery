@@ -37,3 +37,18 @@ nav li:last-child {
     background-color: $primary;
   }
 }
+
+.btn-primary {
+  background: $primary;
+  transition: $smooth;
+  &:hover {
+    background-color: $primary-hover;
+    border: white;
+  }
+}
+
+section.cart {
+  .amount {
+    color: $primary;
+  }
+}
