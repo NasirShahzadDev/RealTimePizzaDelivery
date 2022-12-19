@@ -1,4 +1,6 @@
 @import "./variables";
+@import "~noty/src/noty.scss";
+@import "~noty/src/themes/mint.scss";
 
 body {
   font-family: "lato", sans-serif;
@@ -36,6 +38,9 @@ nav li:last-child {
     color: $pure;
     background-color: $primary;
   }
+  &:focus {
+    outline: none;
+  }
 }
 
 .btn-primary {
@@ -51,4 +56,7 @@ section.cart {
   .amount {
     color: $primary;
   }
+}
+.cart-img {
+  border: solid $primary 2px;
 }

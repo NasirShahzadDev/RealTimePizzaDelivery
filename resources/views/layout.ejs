@@ -30,9 +30,20 @@
           <li class="ml-4"><a href="#">Offers</a></li>
           <li class="ml-4"><a href="register">Register</a></li>
           <li class="ml-4"><a href="login">Login</a></li>
-          <li class="ml-4">
-            <a href="/cart"
-              ><img height="60px" width="60px" src="/img/cart3.png" alt="cart"
+          <li class="ml-4 flex inline-block rounded-full items-center">
+            <a
+              href="cart"
+              id="cartCounter"
+              class="text-white font-bold pr-2 pl-2"
+              ><%= session.cart ? session.cart.totalQty : "" %></a
+            >
+            <a href="cart"
+              ><img
+                height="60px"
+                width="60px"
+                class="cart-img"
+                src="/img/cart3.png"
+                alt="cart"
             /></a>
           </li>
         </ul>
