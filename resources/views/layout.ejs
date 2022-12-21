@@ -28,8 +28,23 @@
         <ul class="flex items-center text-xl">
           <li class="ml-4"><a href="#">Menu</a></li>
           <li class="ml-4"><a href="#">Offers</a></li>
+
+          <% if(user) { %>
+          <li class="ml-4">
+            <form action="/logout" method="POST" id="logout">
+              <a onclick="document.getElementById('logout').submit()" href="#"
+                >Logout</a
+              >
+            </form>
+          </li>
+
+          <% } else { %>
           <li class="ml-4"><a href="register">Register</a></li>
-          <li class="ml-4"><a href="login">Login</a></li>
+          <li class="ml-4">
+            <a href="login">Login</a>
+          </li>
+          <% } %>
+
           <li class="ml-4 flex inline-block rounded-full items-center">
             <a
               href="cart"

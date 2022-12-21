@@ -8,6 +8,7 @@ const session = require("express-session");
 //an HTTP server-side framework used to create and manage a session middleware.
 const flash = require("express-flash");
 const MongoDbStore = require("connect-mongo");
+const passport = require("passport");
 const { dbConnect } = require("./app/config/dbConnection");
 const PORT = 8000;
 const app = express();
@@ -46,9 +47,17 @@ app.use(
 );
 app.use(flash()); // used to
 
+//passport config
+const passportInit = require("./app/config/passport");
+passportInit(passport);
+app.use(passport.initialize());
+app.use(passport.session());
+
 //global middleware
 app.use((req, res, next) => {
   res.locals.session = req.session;
+  res.locals.user = req.user;
+
   next();
 });
 

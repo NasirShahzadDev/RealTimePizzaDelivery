@@ -3,7 +3,11 @@ const { MONGO_URL } = require("./credentials");
 const dbConnect = () => {
   mongoose.set("strictQuery", false);
   mongoose
-    .connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+    .connect(MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      connectTimeoutMS: 1000,
+    })
     .then(() => {
       console.log("Successfully DB Connected!");
     })
