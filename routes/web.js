@@ -3,7 +3,12 @@ const router = express.Router();
 const PizzaController = require("../app/controllers/menuController");
 const CartController = require("../app/controllers/cartController");
 const AuthController = require("../app/controllers/authController");
+const OrderController = require("../app/controllers/orderController");
+const AdminOrderController = require("../app/controllers/admin/orderController");
+
 const guest = require("../app/middleware/guest");
+const auth = require("../app/middleware/auth");
+const admin = require("../app/middleware/admin");
 
 //home route
 router.get("/", PizzaController.getMenu);
@@ -27,8 +32,19 @@ router.get("/login", guest, (req, res) => {
 router.post("/login", guest, AuthController.login);
 
 //logout route
-router.get("/logout", (req, res) => {
-  res.render("auth/login");
-});
 router.post("/logout", AuthController.logout);
+
+//order route
+router.post("/orders", auth, OrderController.createOrder);
+router.get("/customers/orders", auth, OrderController.getOrder);
+router.get("/customers/orders", auth, (req, res) => {
+  res.render("customers/orders");
+});
+
+// admin routes
+router.get("/admin/orders", admin, AdminOrderController.getOrderByAdmin);
+router.get("/admin/orders", admin, (req, res) => {
+  res.render("admin/orders");
+});
+
 module.exports = router;

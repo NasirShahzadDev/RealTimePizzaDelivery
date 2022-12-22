@@ -1,5 +1,6 @@
 const axios = require("axios");
 const Noty = require("noty");
+const { initAdmin } = require("./admin");
 const addToCart = document.querySelectorAll(".add-to-cart"); //get all buttons
 const cartCounter = document.querySelector("#cartCounter");
 let updateCart = (pizza) => {
@@ -39,3 +40,12 @@ addToCart.forEach((btn) => {
 
 //after getting all buttons we'll access every button using forEach(btn) and will
 //apply "click" eventlisener on all btn(s) and will get event from (e)
+
+const alertMessage = document.querySelector("success-alert");
+if (alertMessage) {
+  setTimeout(() => {
+    alertMessage.remove();
+  }, 2000);
+}
+
+initAdmin();

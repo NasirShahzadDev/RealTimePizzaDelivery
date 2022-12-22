@@ -85,6 +85,9 @@ const register = async (req, res) => {
 //     })(req, res, next);
 //   } catch (error) {}
 // };
+const _getRedirectUrl = (req) => {
+  return req.user.role === "admin" ? "/admin/orders" : "/customers/orders";
+};
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -93,6 +96,7 @@ const login = async (req, res, next) => {
     req.flash("error", "All fields are required");
     return res.redirect("/login");
   }
+
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       req.flash("error", info.message);
@@ -108,13 +112,19 @@ const login = async (req, res, next) => {
         return next(err);
       }
 
-      return res.redirect("/");
+      return res.redirect(_getRedirectUrl(req));
     });
   })(req, res, next);
 };
 
 const logout = async (req, res) => {
-  return await res.redirect("/login");
+  try {
+    req.session.destroy();
+    return res.redirect("/login");
+  } catch (error) {
+    req.flash("error", "something went wrong in logout");
+    return res.redirect("/");
+  }
 };
 
 module.exports = { register, login, logout };

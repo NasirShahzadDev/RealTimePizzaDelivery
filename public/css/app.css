@@ -296,3 +296,7 @@ section.cart .amount {
 .cart-img {
   border: solid rgb(243, 121, 15) 2px;
 }
+
+a.link {
+  color: rgb(243, 121, 15);
+}

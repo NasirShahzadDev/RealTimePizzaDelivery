@@ -13,20 +13,6 @@ const { dbConnect } = require("./app/config/dbConnection");
 const PORT = 8000;
 const app = express();
 
-//define routes
-const WebRouter = require("./routes/web");
-// const ApiRouter = require("./routes/api");
-
-//middleware
-app.use(express.static("public"));
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
-//set Templates
-app.use(expressLayout);
-app.set("views", path.join(__dirname, "/resources/views"));
-app.set("view engine", "ejs");
-
 //Database Connection
 dbConnect();
 
@@ -45,7 +31,6 @@ app.use(
     // cookie: { maxAge: 1000 * 24 }, //15 Seconds
   })
 );
-app.use(flash()); // used to
 
 //passport config
 const passportInit = require("./app/config/passport");
@@ -53,13 +38,29 @@ passportInit(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(flash()); // used to
+
+//define routes
+const WebRouter = require("./routes/web");
+// const ApiRouter = require("./routes/api");
+
+//middleware
+app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 //global middleware
 app.use((req, res, next) => {
   res.locals.session = req.session;
   res.locals.user = req.user;
-
+  res.locals.orders = req.orders;
   next();
 });
+
+//set Templates
+app.use(expressLayout);
+app.set("views", path.join(__dirname, "/resources/views"));
+app.set("view engine", "ejs");
 
 //routes
 app.use("/", WebRouter);
