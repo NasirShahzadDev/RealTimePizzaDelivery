@@ -1,4 +1,4 @@
-const OrderService = require("../services/orderService");
+const OrderService = require("../../services/orderService");
 const moment = require("moment");
 const createOrder = async (req, res) => {
   try {
@@ -35,4 +35,16 @@ const getOrder = async (req, res) => {
     return res.redirect("/cart");
   }
 };
-module.exports = { createOrder, getOrder };
+
+const show = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await OrderService.show({ id });
+    if (req.user._id.toString() === order.customerId.toString()) {
+      res.render("customers/singleOrder", { order });
+    }
+  } catch (error) {
+    return res.redirect("/");
+  }
+};
+module.exports = { createOrder, getOrder, show };

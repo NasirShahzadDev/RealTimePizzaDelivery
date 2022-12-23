@@ -9,12 +9,18 @@ const session = require("express-session");
 const flash = require("express-flash");
 const MongoDbStore = require("connect-mongo");
 const passport = require("passport");
+const Emitter = require("events");
 const { dbConnect } = require("./app/config/dbConnection");
 const PORT = 8000;
 const app = express();
 
 //Database Connection
 dbConnect();
+
+//event Emitter
+
+const eventEmitter = new Emitter();
+app.set("eventEmitter", eventEmitter);
 
 //session configuration
 app.use(
@@ -67,6 +73,28 @@ app.use("/", WebRouter);
 // app.use("/api", ApiRouter);
 
 //server listening
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Listening at PORT : ${PORT}`);
+});
+
+//socket
+
+const io = require("socket.io")(server);
+
+io.on("connection", (socket) => {
+  socket.on("join", (orderId) => {
+    //"join" is event
+    socket.join(orderId);
+    //join()is method here // orderId is receiving from app.js (order._d)
+  });
+});
+
+//Event Emitter
+
+eventEmitter.on("orderUpdated", (data) => {
+  io.to(`order_${data.id}`).emit("orderUpdated", data);
+});
+
+eventEmitter.on("orderPlaced", (data) => {
+  io.to("adminRoom").emit("orderPlaced", data);
 });

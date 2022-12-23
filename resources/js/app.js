@@ -1,13 +1,14 @@
 const axios = require("axios");
 const Noty = require("noty");
 const { initAdmin } = require("./admin");
+const moment = require("moment");
+
 const addToCart = document.querySelectorAll(".add-to-cart"); //get all buttons
 const cartCounter = document.querySelector("#cartCounter");
 let updateCart = (pizza) => {
   axios
     .post("/updateCart", pizza)
     .then((res) => {
-      console.log(res);
       cartCounter.innerText = res.data.totalQty;
       new Noty({
         type: "success",
@@ -33,7 +34,6 @@ addToCart.forEach((btn) => {
     //JSON.parse : to convert string into object
     //JSON.Stringify: to convert object into string
     //will get value of manu using dataset in form of (JSON String)
-    console.log(pizza);
     updateCart(pizza);
   });
 });
@@ -48,4 +48,59 @@ if (alertMessage) {
   }, 2000);
 }
 
-initAdmin();
+// Change order status
+let statuses = document.querySelectorAll(".status_line");
+let hiddenInput = document.querySelector("#hiddenInput");
+let order = hiddenInput ? hiddenInput.value : null;
+order = JSON.parse(order);
+let time = document.createElement("small");
+
+function updateStatus(order) {
+  statuses.forEach((status) => {
+    status.classList.remove("step-completed");
+    status.classList.remove("current");
+  });
+  let stepCompleted = true;
+  statuses.forEach((status) => {
+    let dataProp = status.dataset.status;
+    if (stepCompleted) {
+      status.classList.add("step-completed");
+    }
+    if (dataProp === order.status) {
+      stepCompleted = false;
+      time.innerText = moment(order.updatedAt).format("hh:mm A");
+      status.appendChild(time);
+      if (status.nextElementSibling) {
+        status.nextElementSibling.classList.add("current");
+      }
+    }
+  });
+}
+
+updateStatus(order);
+//socket code
+
+const socket = io();
+
+if (order) {
+  socket.emit("join", `order_${order._id}`);
+}
+
+let adminAreaPath = window.location.pathname;
+if (adminAreaPath.includes("admin")) {
+  initAdmin(socket);
+  socket.emit("join", "adminRoom");
+}
+
+socket.on("orderUpdated", (data) => {
+  const updatedOrder = { ...order };
+  updatedOrder.updatedAt = moment().format();
+  updatedOrder.status = data.status;
+  updateStatus(updatedOrder);
+  new Noty({
+    type: "success",
+    timeout: 1000,
+    text: "Successfully Order Updated!",
+    progressBar: false,
+  }).show();
+});

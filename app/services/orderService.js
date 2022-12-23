@@ -11,7 +11,6 @@ const orderCreate = async (data) => {
 
 const orderGet = async (customerId) => {
   try {
-    console.log("service customer id", customerId);
     const order = await OrderModel.find({ customerId }, null, {
       sort: { createdAt: -1 },
     });
@@ -21,4 +20,12 @@ const orderGet = async (customerId) => {
     throw error;
   }
 };
-module.exports = { orderCreate, orderGet };
+
+const show = async ({ id }) => {
+  try {
+    return await OrderModel.findById({ _id: id });
+  } catch (error) {
+    throw error;
+  }
+};
+module.exports = { orderCreate, orderGet, show };

@@ -1,8 +1,7 @@
 const UserService = require("../services/userService");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
-const { v4: uuidv4 } = require("uuid");
-const { JWT_SECRET } = require("../../app/config/credentials");
+
 const register = async (req, res) => {
   try {
     const user = req.body;
@@ -24,67 +23,11 @@ const register = async (req, res) => {
     //create user
     await UserService.createUser(req.body);
     return res.redirect("/");
-    // return res.status(201).json({
-    //   message: "Successfully User Created",
-    //   create,
-    // });
   } catch (error) {
     req.flash("error", "Something went wrong!");
     res.redirect("/register ");
   }
 };
-// ////////////login controller
-// const login = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     const user = await UserService.getExistingUser({ email });
-//     if (!user) {
-//       req.flash("error", "User not exist...");
-//       return res.redirect("/login");
-//       // req.flash("email", user.email);
-//     }
-//     const matchPassword = await bcrypt.compare(password, user.password);
-//     if (!matchPassword) {
-//       req.flash("error", "Password not matched...");
-//       req.flash("email", user.email);
-//     }
-//     const uniqueKey = uuidv4();
-//     await UserService.updateUser({
-//       userId: user._id,
-//       dataToUpdate: { uniqueKey: uniqueKey },
-//     });
-//     return res.redirect("/", { user: user });
-//     // req.flash("error", "Successfully! Logged in");
-
-//     // return res.redirect("/login");
-//   } catch (error) {
-//     req.flash("error", "Something went wrong!");
-//     res.redirect("/login");
-//   }
-// };
-
-// const login = async (req, res, next) => {
-//   try {
-//     // error=>null, user=>user/false, info=>message ------> all from config/passport.js
-//     await passport.authenticate("local", (error, user, info) => {
-//       if (error) {
-//         req.flash("error", info.message);
-//         return next(error);
-//       }
-//       if (!user) {
-//         req.flash("error", info.message);
-//         return res.redirect("/login");
-//       }
-//     });
-//     res.login(user, (error) => {
-//       if (error) {
-//         req.flash("error", info.message);
-//         return next(error);
-//       }
-//       return res.redirect("/");
-//     })(req, res, next);
-//   } catch (error) {}
-// };
 const _getRedirectUrl = (req) => {
   return req.user.role === "admin" ? "/admin/orders" : "/customers/orders";
 };
@@ -96,7 +39,6 @@ const login = async (req, res, next) => {
     req.flash("error", "All fields are required");
     return res.redirect("/login");
   }
-
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       req.flash("error", info.message);
@@ -111,7 +53,6 @@ const login = async (req, res, next) => {
         req.flash("error", info.message);
         return next(err);
       }
-
       return res.redirect(_getRedirectUrl(req));
     });
   })(req, res, next);
