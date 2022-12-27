@@ -10,7 +10,6 @@ function init(passport) {
         // Login
         // check if email exists
         const user = await UserModel.findOne({ email: email });
-        console.log(user);
         if (!user) {
           return done(null, false, {
             message: "User not exist... try another!",

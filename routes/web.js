@@ -17,7 +17,6 @@ router.get("/", PizzaController.getMenu);
 router.get("/cart", (req, res) => {
   res.render("customers/cart");
 });
-//
 router.get("/customers/cart", (req, res) => {
   res.render("customers/cart");
 });
